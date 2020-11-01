@@ -15,15 +15,15 @@ json_blockcolors = block_module.json_manager(datapath)
 json_blockcolors.create_file(blockwidth, blockheight)
 
 #img array
-img = cv2.imread(os.path.join(imgpath, random.choice(os.listdir(imgpath)))) 
-print(img)
+img = cv2.imread(os.path.join(imgpath, random.choice(os.listdir(imgpath))))
+
 json_blockcolors.load_dic()
 block_data = json_blockcolors.get_dic()
 blocklist = []
 
 blocklist = block_module.get_best_block(block_data, img)
 
-print(len(blocklist), len(blocklist[0]))
+print(len(blocklist), len(blocklist))
 toplace = block_module.generate_commands(blocklist)
 print(toplace)
 print("click in minecraft text")
