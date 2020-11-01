@@ -16,8 +16,7 @@ json_blockcolors.create_file(blockwidth, blockheight)
 
 #img array
 img = cv2.imread(os.path.join(imgpath, random.choice(os.listdir(imgpath)))) 
-
-
+print(img)
 json_blockcolors.load_dic()
 block_data = json_blockcolors.get_dic()
 blocklist = []

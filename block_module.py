@@ -6,17 +6,17 @@ class json_manager():
         self.blockdic = {}
 
     def create_file(self, block_pic_width, block_pic_height):
-        blockpath = os.path.join(self.path, "blocks")
-
+        
         #data
         if "block_color_values.json" not in os.listdir(self.path):
             jsondata = {}
 
             with open(os.path.join(self.path, "block_color_values.json"), 'w') as jsonfile:
+                blockpath = os.path.join(self.path, "blocks")
                 for block in os.listdir(blockpath):
                     average = {}
-
                     activeblock = cv2.imread(os.path.join(blockpath, block))
+                    
                     for line in activeblock:
                         for pixel in line:
                             if (int(pixel[2]), int(pixel[1]), int(pixel[0])) not in average:
@@ -75,10 +75,9 @@ def get_best_block(block_color_values, img_array):
             
             #alle bei denen die Werte um maximal 10 schwanken werden in possible matching gepackt
             for key, value in block_color_values.items():    
-                if value["color"][0] > p_read-50 and value["color"][0] < p_read+50 and value["color"][1] > p_green-50 and value["color"][1] < p_green+50 and value["color"][1] > p_blue-50 and value["color"][1] < p_blue+50:
+                if value["color"][0] > p_read-25 and value["color"][0] < p_read+25 and value["color"][1] > p_green-25 and value["color"][1] < p_green+25 and value["color"][1] > p_blue-25 and value["color"][1] < p_blue+25:
                     possible_matching[key] = value["pixels"]
 
-            print(possible_matching)
             last = 0
             for key, value in possible_matching.items():
                 if value > last:
@@ -87,6 +86,6 @@ def get_best_block(block_color_values, img_array):
             
             block_list[linecount].append(matchingblock)
         linecount += 1
-        
+        print(linecount)
     
     return block_list
