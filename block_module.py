@@ -31,8 +31,7 @@ class json_manager():
                             highestnum = value
                             use = key 
 
-                    print(use, highestnum)
-                    jsondata[block.split(".")[0].replace("_top", "")] = use
+                    jsondata[block.split(".")[0].replace("_top", "").replace("_bottom", "")] = {"color":use, "pixels":highestnum}
 
                 self.blockdic = jsondata
                 json.dump(jsondata, jsonfile, indent=4)
@@ -59,3 +58,35 @@ def generate_commands(blocklist):
             x += 1
         x = 0
     return commands
+
+def get_best_block(block_color_values, img_array):
+    block_list = []
+    linecount = 0
+
+    for line in img_array:
+        block_list.append([])
+        for pixel in line:
+            p_read = pixel[2]
+            p_green = pixel[1]
+            p_blue = pixel[0]
+
+            matchingblock = None
+            possible_matching = {}
+            
+            #alle bei denen die Werte um maximal 10 schwanken werden in possible matching gepackt
+            for key, value in block_color_values.items():    
+                if value["color"][0] > p_read-50 and value["color"][0] < p_read+50 and value["color"][1] > p_green-50 and value["color"][1] < p_green+50 and value["color"][1] > p_blue-50 and value["color"][1] < p_blue+50:
+                    possible_matching[key] = value["pixels"]
+
+            print(possible_matching)
+            last = 0
+            for key, value in possible_matching.items():
+                if value > last:
+                    matchingblock = key
+                
+            
+            block_list[linecount].append(matchingblock)
+        linecount += 1
+        
+    
+    return block_list
