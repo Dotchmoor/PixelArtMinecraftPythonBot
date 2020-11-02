@@ -88,14 +88,24 @@ def get_best_block(block_color_values, img_array):
         for pixel in range(len(img_array[0])):
             leftspots[line][pixel] = 0
 
+    print(leftspots)
+
     print(block_color_values)
-    for line in range(len(img_array)):
-        for pixel in range(len(img_array[0])):
-            for block in block_color_values:
-                while compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == False:
-                    tollerance += 1
-                else:
-                    block_list[line][pixel][0] = block
+    while len(leftspots) > 0:
+        for line in range(len(img_array)):
+            for pixel in range(len(img_array[0])):       
+                for block in block_color_values:
+                    if compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == True:
+                        block_list[line][pixel][0] = block
+                        del leftspots[line][pixel]
+                        if len(leftspots[line]) < 1:
+                            del leftspots[line]
+                            
+                        print("deleted")
+                        break
+                    else:
+                        tollerance += 1
+                        print(tollerance)
 
     return [[x[0] for x in y] for y in block_list]
 
