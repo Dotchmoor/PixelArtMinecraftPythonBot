@@ -59,71 +59,45 @@ def generate_commands(blocklist):
         x = 0
     return commands
 
+def compare(tollerance, rgb_list_1, rgb_list_2):
+    rv = rgb_list_1[0] - rgb_list_2[0]
+    gv = rgb_list_1[1] - rgb_list_2[1]
+    bv = rgb_list_1[2] - rgb_list_2[2]
+
+    if rv < 0:
+        rv = rv * -1
+    if gv < 0:
+        gv = gv * -1
+    if bv < 0:
+        bv = bv * -1
+    
+    if rv <= tollerance and gv <= tollerance and bv <= tollerance:
+        return True
+    else:
+        return False
+
 def get_best_block(block_color_values, img_array):
     block_list = [[[None] for x in y] for y in img_array]
-    touse = {}
-
     
-    for y in range(len(img_array)):
-        touse[y] = {}
-        for x in range(len(img_array[0])):
-            touse[y][x] = 0
+    leftspots = {}
 
     tollerance = 1
 
     for line in range(len(img_array)):
-        for pixel in range(len(img_array[line])):
-            if block_list[line][pixel][0] == None:
-                matchingblock = None
-                possible_matching = {}
-                p_read = img_array[line][pixel][2]
-                p_green = img_array[line][pixel][1]
-                p_blue = img_array[line][pixel][0]
+        leftspots[line] = {}
+        for pixel in range(len(img_array[0])):
+            leftspots[line][pixel] = 0
 
-                for key, value in block_color_values.items():    
-                    if value["color"][0] > p_read-tollerance and value["color"][0] < p_read+tollerance and value["color"][1] > p_green-tollerance and value["color"][1] < p_green+tollerance and value["color"][1] > p_blue-tollerance and value["color"][1] < p_blue+tollerance:
-                        possible_matching[key] = value["pixels"]
-                print(f"{line}, {pixel}")
-                print(touse[line])
-                del touse[line][pixel]
-                if len(touse[line]) < 1:
-                    del touse[line]
+    print(block_color_values)
+    for line in range(len(img_array)):
+        for pixel in range(len(img_array[0])):
+            for block in block_color_values:
+                while compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == False:
+                    tollerance += 1
+                else:
+                    block_list[line][pixel][0] = block
 
-                last = 0
-                for key, value in possible_matching.items():
-                    if value > last:
-                        matchingblock = key
-            block_list[line][pixel].append(matchingblock)
+    return [[x[0] for x in y] for y in block_list]
 
     
-    while len(touse) > 0:
-        tollerance += 15
-        if line in touse:
-            for line in range(len(img_array)):
-                if pixel in touse[line]:
-                    for pixel in range(len(img_array[line])):
-                        if block_list[line][pixel][0] == None:
-                            matchingblock = None
-                            possible_matching = {}
-                            p_read = img_array[line][pixel][2]
-                            p_green = img_array[line][pixel][1]
-                            p_blue = img_array[line][pixel][0]
-
-                            print(p_read)
-
-                            for key, value in block_color_values.items():    
-                                if value["color"][0] > p_read-tollerance and value["color"][0] < p_read+tollerance and value["color"][1] > p_green-tollerance and value["color"][1] < p_green+tollerance and value["color"][1] > p_blue-tollerance and value["color"][1] < p_blue+tollerance:
-                                    possible_matching[key] = value["pixels"]
-                                    print(f"{line}, {pixel}")
-                                    del touse[line][pixel]
-                                    if len(touse[line]) < 1:
-                                        del touse[line]
-
-                            last = 0
-                            for key, value in possible_matching.items():
-                                if value > last:
-                                    matchingblock = key
-                        block_list[line][pixel].append(matchingblock)
-                    print(line)
-            
-    return [[x[0] for x in y] for y in block_list]
+    
