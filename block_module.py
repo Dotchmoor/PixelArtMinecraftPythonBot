@@ -91,8 +91,8 @@ def get_best_block(block_color_values, img_array):
     while len(leftspots) > 0:
         for line in range(len(img_array)):
             if line in leftspots:
-                tollerance = 1
-                for pixel in range(len(img_array[0])):    
+                for pixel in range(len(img_array[0])):   
+                    tollerance = 1 
                     if pixel in leftspots[line]:   
                         for block in block_color_values:
                             if compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == True:
