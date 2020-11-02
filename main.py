@@ -21,8 +21,7 @@ block_data = json_blockcolors.get_dic()
 blocklist = []
 
 blocklist = block_module.get_best_block(block_data, img)
-
-print(len(blocklist), len(blocklist))
+print(len(blocklist), len(blocklist[0]))
 toplace = block_module.generate_commands(blocklist)
 print(toplace)
 print("click in minecraft text")

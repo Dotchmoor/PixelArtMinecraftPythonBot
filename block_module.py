@@ -80,9 +80,6 @@ def get_best_block(block_color_values, img_array):
     block_list = [[[None] for x in y] for y in img_array]
     
     leftspots = {}
-
-    tollerance = 1
-
     for line in range(len(img_array)):
         leftspots[line] = {}
         for pixel in range(len(img_array[0])):
@@ -93,18 +90,19 @@ def get_best_block(block_color_values, img_array):
     print(block_color_values)
     while len(leftspots) > 0:
         for line in range(len(img_array)):
-            for pixel in range(len(img_array[0])):       
-                for block in block_color_values:
-                    if compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == True:
-                        block_list[line][pixel][0] = block
-                        del leftspots[line][pixel]
-                        if len(leftspots[line]) < 1:
-                            del leftspots[line]
-                            
-                        print("deleted")
-                        break
-                    else:
-                        tollerance += 1
+            if line in leftspots:
+                tollerance = 1
+                for pixel in range(len(img_array[0])):    
+                    if pixel in leftspots[line]:   
+                        for block in block_color_values:
+                            if compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == True:
+                                block_list[line][pixel][0] = block
+                                del leftspots[line][pixel]
+                                if len(leftspots[line]) < 1:
+                                    del leftspots[line]
+                                print(img_array[line][pixel], block_color_values[block]["color"])
+                                break
+                        tollerance += 10
                         print(tollerance)
 
     return [[x[0] for x in y] for y in block_list]
