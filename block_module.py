@@ -31,7 +31,7 @@ class json_manager():
                             highestnum = value
                             use = key 
 
-                    jsondata[block.split(".")[0].replace("_top", "").replace("_bottom", "")] = {"color":use, "pixels":highestnum}
+                    jsondata[block.split(".")[0].replace("_top", "").replace("_bottom", "").replace("_side", "").replace("_inside", "")] = {"color":use, "pixels":highestnum}
 
                 self.blockdic = jsondata
                 json.dump(jsondata, jsonfile, indent=4)
@@ -91,19 +91,25 @@ def get_best_block(block_color_values, img_array):
     tollerance = 1 
     while len(leftspots) > 0:
         for line in range(len(img_array)):
+            
             print(line, pixel, "new line")
             if line in leftspots:
                 for pixel in range(len(img_array[0])):   
                     print(line, pixel, "new pixel")
-                    if pixel in leftspots[line]:   
-                        for block in block_color_values:
-                            if compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == True:
-                                block_list[line][pixel][0] = block
-                                del leftspots[line][pixel]
-                                if len(leftspots[line]) < 1:
-                                    del leftspots[line]
-                                print(img_array[line][pixel], block_color_values[block]["color"])
-                                break
+                    try:
+                        if pixel in leftspots[line]:   
+                            for block in block_color_values:
+                                if compare(tollerance, block_color_values[block]["color"], [img_array[line][pixel][2], img_array[line][pixel][1], img_array[line][pixel][0]]) == True:
+                                    block_list[line][pixel][0] = block
+                                    del leftspots[line][pixel]
+                                    if len(leftspots[line]) < 1:
+                                        del leftspots[line]
+                                    print(img_array[line][pixel], block_color_values[block]["color"])
+                                    break
+                    except KeyError:
+                        print(leftspots)
+                        print("Key Error", line, pixel)
+                        print(KeyError)
         tollerance += 10
         print(tollerance)
 
