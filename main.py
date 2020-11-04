@@ -1,5 +1,5 @@
 import cv2, os, random, keyboard, time
-import block_module
+import twod_block_module
 
 #paths
 mainpath = os.path.dirname(__file__)
@@ -11,22 +11,16 @@ blockwidth = 16
 blockheight = 16
 
 #data
-json_blockcolors = block_module.json_manager(datapath)
-json_blockcolors.create_file(blockwidth, blockheight)
+json_blockcolors = twod_block_module.block_manager(datapath)
 
 #img array
 img = cv2.imread(os.path.join(imgpath, random.choice(os.listdir(imgpath))))
-json_blockcolors.load_dic()
-block_data = json_blockcolors.get_dic()
-blocklist = []
+twod_pixel_map = twod_block_module.pixel_img(img, json_blockcolors.get_data())
+com_list = twod_pixel_map.get_command_list()
 
-blocklist = block_module.get_best_block(block_data, img)
-print(len(blocklist), len(blocklist[0]))
-toplace = block_module.generate_commands(blocklist)
-print(toplace)
 print("click in minecraft text")
 time.sleep(5)
-for entry in toplace:
+for entry in com_list:
     if keyboard.is_pressed('q') == False:
         keyboard.write(entry)
         keyboard.press_and_release('enter')
