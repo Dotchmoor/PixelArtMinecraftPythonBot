@@ -12,14 +12,14 @@ class block_manager():
                 blockpath = os.path.join(self.block_path, "blocks")
                 for block in os.listdir(blockpath):
                     average = {}
-                    activeblock = cv2.imread(os.path.join(blockpath, block))
+                    activeblock = cv2.cvtColor(cv2.imread(os.path.join(blockpath, block)), cv2.COLOR_BGR2RGB)
                     
                     for line in activeblock:
                         for pixel in line:
-                            if (int(pixel[2]), int(pixel[1]), int(pixel[0])) not in average:
-                                average[(int(pixel[2]), int(pixel[1]), int(pixel[0]))] = 1
+                            if (int(pixel[0]), int(pixel[1]), int(pixel[2])) not in average:
+                                average[(int(pixel[0]), int(pixel[1]), int(pixel[2]))] = 1
                             else:
-                                average[(int(pixel[2]), int(pixel[1]), int(pixel[0]))] += 1
+                                average[(int(pixel[0]), int(pixel[1]), int(pixel[2]))] += 1
                     
                     use = None
                     highestnum = 0
@@ -43,7 +43,6 @@ class pixel_img:
     def __init__(self, img_list, block_color_values):
         self.img_list = img_list
         self.blocks_to_img = self.__get_best_suiting_block(block_color_values, img_list)
-        print(self.blocks_to_img)
         self.command_list = self.__generate_commands(self.blocks_to_img)
     
     def get_command_list(self):
@@ -73,6 +72,13 @@ class pixel_img:
                         break
         cv2.imwrite(os.path.join(data_path, "last_run.png"), numpy.array(img_list))            
 
+    def __get_best_suiting_block_v2(self, block_color_values, img_list):
+        block_list = []
+
+        for line in img_list:
+            for pixel in line:
+                pass
+
     def __get_best_suiting_block(self, block_color_values, img_list):
         block_list = [[[None] for x in y] for y in img_list]
         
@@ -96,7 +102,7 @@ class pixel_img:
                         try:
                             if pixel in leftspots[line]:   
                                 for block in block_color_values:
-                                    if self.__compare(tollerance, block_color_values[block]["color"], [img_list[line][pixel][2], img_list[line][pixel][1], img_list[line][pixel][0]]) == True:
+                                    if self.__compare(tollerance, block_color_values[block]["color"], [img_list[line][pixel][0], img_list[line][pixel][1], img_list[line][pixel][2]]) == True:
                                         block_list[line][pixel][0] = block
                                         del leftspots[line][pixel]
                                         if len(leftspots[line]) < 1:
@@ -114,9 +120,9 @@ class pixel_img:
         return [[x[0] for x in y] for y in block_list]
 
     def __compare(self, tollerance, rgb_list_1, rgb_list_2):
-        rv = rgb_list_1[0] - rgb_list_2[0]
+        rv = rgb_list_1[2] - rgb_list_2[2]
         gv = rgb_list_1[1] - rgb_list_2[1]
-        bv = rgb_list_1[2] - rgb_list_2[2]
+        bv = rgb_list_1[0] - rgb_list_2[0]
 
         if rv < 0:
             rv = rv * -1
