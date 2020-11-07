@@ -1,4 +1,4 @@
-import json, os, random, cv2, numpy
+import json, os, random, cv2, numpy, time
 
 class block_manager():
     def __init__(self, folder_with_blocks):
@@ -44,7 +44,7 @@ class pixel_img:
         self.img_list = img_list
         self.blocks_to_img = self.__get_best_suiting_block(block_color_values, img_list)
         self.command_list = self.__generate_commands(self.blocks_to_img)
-    
+
     def get_command_list(self):
         return self.command_list
     
@@ -71,14 +71,7 @@ class pixel_img:
                             y += 1
                         break
         cv2.imwrite(os.path.join(data_path, "last_run.png"), numpy.array(img_list))            
-
-    def __get_best_suiting_block_v2(self, block_color_values, img_list):
-        block_list = []
-
-        for line in img_list:
-            for pixel in line:
-                pass
-
+         
     def __get_best_suiting_block(self, block_color_values, img_list):
         block_list = [[[None] for x in y] for y in img_list]
         
