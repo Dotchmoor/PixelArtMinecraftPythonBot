@@ -16,8 +16,8 @@ json_blockcolors = twod_block_module.block_manager(datapath)
 #img array
 img = cv2.cvtColor(cv2.imread(os.path.join(imgpath, random.choice(os.listdir(imgpath)))), cv2.COLOR_BGR2RGB)
 twod_pixel_map = twod_block_module.pixel_img(img, json_blockcolors.get_data())
-#com_list = twod_pixel_map.get_command_list()
-#twod_pixel_map.create_img(datapath, 16)
+com_list = twod_pixel_map.get_command_list()
+twod_pixel_map.create_img(datapath, 16)
 
 #print("click in minecraft text")
 #time.sleep(5)
